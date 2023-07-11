@@ -5,6 +5,9 @@ import initializePassport from "./passport-config";
 import flash from "express-flash";
 import session from "express-session";
 import methodOverride from "method-override";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 initializePassport(
   passport,
@@ -18,11 +21,12 @@ const users: any = [];
 
 const app = express();
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(flash());
 app.use(
   session({
-    secret: "secret-token",
+    secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
   })
@@ -48,7 +52,10 @@ app.post(
   checkNotAuthenticated,
   passport.authenticate("local", {
     successMessage: "Correct user email and password",
-  })
+  }),
+  function (req, res) {
+    res.json({ message: "Successfully logged in" });
+  }
 );
 
 app.post("/register", checkNotAuthenticated, async (req, res) => {
@@ -67,8 +74,6 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
     console.log(err);
   }
 });
-
-console.log(users);
 
 function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
