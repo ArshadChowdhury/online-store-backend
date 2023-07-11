@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 const LocalStrategy = passportLocal.Strategy;
 
 export default function initialize(passport: any, getUserByEmail: any, getUserById:any) {
-  const authenticateUser = async (email: any, password: any, done: any) => {
+  const authenticateUser = async (email: string, password: string, done: any) => {
     const user = getUserByEmail(email);
     if (user == null) {
       return done(null, false, { message: "No user found with that email" });

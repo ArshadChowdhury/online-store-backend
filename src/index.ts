@@ -33,11 +33,9 @@ app.use(methodOverride("_method"));
 
 const port = 3000;
 
-app.get("/", (req, res) => {
-  if (users) {
+app.get("/", checkAuthenticated, (req, res) => {
+  if (users.length > 0) {
     res.send(users[0]);
-  } else {
-    res.json({ message: "Login first" });
   }
 });
 
